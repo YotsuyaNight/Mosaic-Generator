@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.1.0)
 project(mosaicgenerator)
 set(CMAKE_CXX_STANDARD 17)
 
-set(PROJECT_SRC
+set(SOURCES
     pixelmap_test.cpp
 )
 
-add_executable(mg_tests main.cpp catch.hpp ${PROJECT_SRC})
-target_link_libraries(mg_tests libmg)
+add_executable(unittests main.cpp catch.hpp ${SOURCES})
+target_link_libraries(unittests libmg)
 
-set_target_properties(mg_tests
+set_target_properties(unittests
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
