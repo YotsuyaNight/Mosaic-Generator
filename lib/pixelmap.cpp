@@ -52,6 +52,24 @@ uint* PixelMap::operator[](std::size_t idx)
     return m_data[idx];
 }
 
+int PixelMap::distance(PixelMap *pm)
+{
+    int distance = 0;
+    int h = std::min(m_h, pm->m_h);
+    int w = std::min(m_w, pm->m_w);
+    for (int x = 0; x < h; x++) {
+        for (int y = 0; y < w; y++) {
+            QColor l(m_data[x][y]);
+            QColor r(pm->m_data[x][y]);
+            distance += std::abs(l.alpha() - r.alpha())
+                     +  std::abs(l.red() - r.red())
+                     +  std::abs(l.green() - r.green())
+                     +  std::abs(l.blue() - r.blue());
+        }
+    }
+    return distance;
+}
+
 QString PixelMap::toString()
 {
     QStringList sl;

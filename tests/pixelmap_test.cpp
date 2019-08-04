@@ -48,4 +48,16 @@ TEST_CASE("PixelMap::operator[]") {
 
 }
 
+TEST_CASE("PixelMap::distance") {
+
+    PixelMap p1(2, 2);
+    PixelMap p2(2, 2);
+    REQUIRE(p1.distance(&p2) == 0);
+    p1[0][0] = QColor(100, 0, 0, 0).rgba();
+    REQUIRE(p1.distance(&p2) == 100);
+    p2[0][0] = QColor(0, 100, 0, 0).rgba();
+    REQUIRE(p1.distance(&p2) == 200);
+    
+}
+
 }

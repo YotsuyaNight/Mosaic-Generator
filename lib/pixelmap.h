@@ -17,6 +17,7 @@ public:
 
     void copyFrom(PixelMap *pm);
     uint* operator[](std::size_t idx);
+    int distance(PixelMap *pm);
 
     QString toString();
 

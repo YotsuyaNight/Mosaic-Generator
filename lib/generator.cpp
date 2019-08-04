@@ -1,3 +1,4 @@
+#include <QMap>
 #include "generator.h"
 
 namespace MosaicGenerator {
@@ -14,12 +15,23 @@ void Generator::generate()
 {
     int i = 0;
     QVector<PixelMap*> icons = m_repository->icons();
+
+    //Each tile
     for (int x = 0; x < m_mosaic->rows(); x++) {
         for (int y = 0; y < m_mosaic->columns(); y++) {
-            m_mosaic->setTile(x, y, icons[i]);
-            i = (i + 1) % icons.size();
+
+            PixelMap sourceTile = m_source->getTile(x, y);
+            QMap<int, PixelMap*> bmuMap;
+            for (PixelMap *unit : icons) {
+                int distance = sourceTile.distance(unit);
+                bmuMap.insert(distance, unit);
+            }
+            PixelMap *bmu = bmuMap.begin().value();
+            m_mosaic->setTile(x, y, bmu);
+
         }
     }
+
 }
 
 IconRepository* Generator::iconRepository()
