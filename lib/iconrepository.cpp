@@ -26,7 +26,7 @@ IconRepository::~IconRepository()
     qDeleteAll(m_icons);
 }
 
-QList<PixelMap*> IconRepository::icons()
+QVector<PixelMap*> IconRepository::icons()
 {
     return m_icons;
 }

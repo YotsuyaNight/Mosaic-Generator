@@ -33,7 +33,7 @@ Mosaic::Mosaic(QImage image, int tw, int th)
         for (int y = 0; y < m_cols; y++) {
             for (int i = 0; i < m_th; i++) {
                 for (int j = 0; j < m_tw; j++) {
-                    getTile(x,y)[i][j] = image.pixel(x * th + i, y * tw + j);
+                    getTile(x,y)[i][j] = image.pixel(y * m_tw + i, x * m_th + j);
                 }
             }
         }
@@ -54,13 +54,12 @@ void Mosaic::setTile(int x, int y, PixelMap* pm)
 
 QImage Mosaic::toImage()
 {
-    QImage img(m_cols * m_tw, m_rows * m_th, QImage::Format::Format_ARGB32);
-    img.fill(0);
+    QImage img(m_cols * m_tw, m_rows * m_th, QImage::Format_ARGB32);
     for (int x = 0; x < m_rows; x++) {
         for (int y = 0; y < m_cols; y++) {
-            for (int i = 0; i < m_th; i++) {
-                for (int j = 0; j < m_tw; j++) {
-                   img.setPixel(x * m_th + i, y * m_tw + j, getTile(x,y)[i][j]);
+            for (int i = 0; i < m_tw; i++) {
+                for (int j = 0; j < m_th; j++) {
+                   img.setPixel(y * m_tw + i, x * m_th + j, getTile(x,y)[i][j]);
                 }
             }
         }

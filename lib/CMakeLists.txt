@@ -7,6 +7,7 @@ set(SOURCES
     iconrepository.cpp
     pixelmap.cpp
     mosaic.cpp
+    generator.cpp
 )
 
 add_library(libmg STATIC ${SOURCES})
