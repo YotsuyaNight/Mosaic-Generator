@@ -45,7 +45,13 @@ TEST_CASE("Mosaic::getTile") {
 TEST_CASE("Mosaic::Mosaic(QImage)") {
 
     Mosaic m(QImage("/home/yotsuya/icons/01_1.png"), 48, 48);
-    m.toImage().save("/home/yotsuya/mb_test_image.png");
+    Mosaic t(m.rows(), m.columns(), m.tileWidth(), m.tileHeight());
+    for (int x = 0; x < m.rows(); x++) {
+        for (int y = 0; y < m.columns(); y++) {
+            t.setTile(x, y, &m.getTile(x, y));
+        }
+    }
+    t.toImage().save("/home/yotsuya/mb_test_image.png");
 
 }
 

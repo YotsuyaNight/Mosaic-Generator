@@ -47,6 +47,11 @@ Mosaic::~Mosaic()
     }
 }
 
+void Mosaic::setTile(int x, int y, PixelMap* pm)
+{
+    getTile(x, y).copyFrom(pm);
+}
+
 QImage Mosaic::toImage()
 {
     QImage img(m_cols * m_tw, m_rows * m_th, QImage::Format::Format_ARGB32);

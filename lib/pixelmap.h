@@ -15,6 +15,7 @@ public:
     explicit PixelMap(const QImage &image);
     virtual ~PixelMap();
 
+    void copyFrom(PixelMap *pm);
     uint* operator[](std::size_t idx);
 
     QString toString();

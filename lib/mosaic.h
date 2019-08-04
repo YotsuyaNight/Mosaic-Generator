@@ -14,6 +14,7 @@ public:
     explicit Mosaic(QImage image, int tw, int th);
     virtual ~Mosaic();
 
+    void setTile(int x, int y, PixelMap* pm);
     QImage toImage();
 
     PixelMap& getTile(int x, int y);

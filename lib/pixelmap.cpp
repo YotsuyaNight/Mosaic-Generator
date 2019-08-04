@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "pixelmap.h"
 
 namespace MosaicGenerator {
@@ -33,6 +34,17 @@ PixelMap::~PixelMap()
         delete m_data[x];
     }
     delete m_data;
+}
+
+void PixelMap::copyFrom(PixelMap *pm)
+{
+    int h = std::min(m_h, pm->m_h);
+    int w = std::min(m_w, pm->m_w);
+    for (int x = 0; x < h; x++) {
+        for (int y = 0; y < w; y++) {
+            m_data[x][y] = pm->m_data[x][y];
+        }
+    }
 }
 
 uint* PixelMap::operator[](std::size_t idx)
