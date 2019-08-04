@@ -11,7 +11,10 @@ class Mosaic
 {
 public:
     explicit Mosaic(int rows, int cols, int tw, int th);
+    explicit Mosaic(QImage image, int tw, int th);
     virtual ~Mosaic();
+
+    QImage toImage();
 
     PixelMap& getTile(int x, int y);
     int rows();
@@ -20,6 +23,8 @@ public:
     int tileHeight();
 
 private:
+    void initialize(int rows, int cols, int tw, int th);
+
     int m_rows;
     int m_cols;
     int m_tw;

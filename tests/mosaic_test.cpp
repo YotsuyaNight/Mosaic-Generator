@@ -42,4 +42,11 @@ TEST_CASE("Mosaic::getTile") {
 
 }
 
+TEST_CASE("Mosaic::Mosaic(QImage)") {
+
+    Mosaic m(QImage("/home/yotsuya/icons/01_1.png"), 48, 48);
+    m.toImage().save("/home/yotsuya/mb_test_image.png");
+
+}
+
 }
