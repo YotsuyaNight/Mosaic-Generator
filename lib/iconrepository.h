@@ -14,8 +14,10 @@ public:
     explicit IconRepository(QString path);
     virtual ~IconRepository();
 
+    QList<PixelMap*> icons();
+
 private:
-    QList<PixelMap*> m_images;
+    QList<PixelMap*> m_icons;
 };
 
 }

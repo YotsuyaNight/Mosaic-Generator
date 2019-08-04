@@ -6,6 +6,7 @@ find_package(Qt5 COMPONENTS Widgets)
 set(SOURCES
     iconrepository.cpp
     pixelmap.cpp
+    mosaic.cpp
 )
 
 add_library(libmg STATIC ${SOURCES})

@@ -4,11 +4,12 @@
 #include <QImage>
 #include <QHash>
 
+typedef unsigned int uint;
+
 namespace MosaicGenerator {
 
 class PixelMap
 {
-typedef unsigned int uint;
 public:
     explicit PixelMap(int w, int h);
     explicit PixelMap(const QImage &image);

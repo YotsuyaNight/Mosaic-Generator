@@ -7,22 +7,28 @@ namespace MosaicGenerator {
 
 IconRepository::IconRepository(QString path) 
 {
+    //Scan directory for image files
     QDir directory(path);
     QStringList filters;
     filters << "*.png" << "*.jpg" << "*.jpeg";
     directory.setNameFilters(filters);
-
+    //Turn images into PixelMap objects
     for (QFileInfo file : directory.entryInfoList()) {
         QImage *image = new QImage(file.absoluteFilePath());
         PixelMap *pm = new PixelMap(*image);
-        m_images.append(pm);
+        m_icons.append(pm);
         delete image;
     }
 }
 
 IconRepository::~IconRepository()
 {
-    qDeleteAll(m_images);
+    qDeleteAll(m_icons);
+}
+
+QList<PixelMap*> IconRepository::icons()
+{
+    return m_icons;
 }
 
 }
