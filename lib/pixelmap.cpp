@@ -31,9 +31,9 @@ PixelMap::PixelMap(const QImage &image)
 PixelMap::~PixelMap()
 {
     for (int x = 0; x < m_h; x++) {
-        delete m_data[x];
+        delete[] m_data[x];
     }
-    delete m_data;
+    delete[] m_data;
 }
 
 void PixelMap::copyFrom(PixelMap *pm)
