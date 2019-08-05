@@ -54,9 +54,9 @@ TEST_CASE("PixelMap::distance") {
     PixelMap p2(2, 2);
     REQUIRE(p1.distance(&p2) == 0);
     p1[0][0] = QColor(100, 0, 0, 0).rgba();
-    REQUIRE(p1.distance(&p2) == 100);
+    REQUIRE(p1.distance(&p2) == 10000);
     p2[0][0] = QColor(0, 100, 0, 0).rgba();
-    REQUIRE(p1.distance(&p2) == 200);
+    REQUIRE(p1.distance(&p2) == 20000);
     
 }
 

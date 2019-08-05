@@ -1,7 +1,59 @@
+#include <QDebug>
 #include <QMap>
 #include "generator.h"
 
 namespace MosaicGenerator {
+
+GeneratorRunner::GeneratorRunner(Generator *parent, int threadNumber, int threadCount)
+    : m_parent(parent), m_threadNumber(threadNumber), m_threadCount(threadCount)
+{
+}
+
+void GeneratorRunner::run()
+{
+    QVector<PixelMap*> icons = m_parent->m_repository->icons();
+    QMap<PixelMap*, int> cooldown;
+    int rows = m_parent->m_mosaic->rows();
+    int cols = m_parent->m_mosaic->columns();
+    //Each tile
+    for (int x = 0; x < rows; x++) {
+        for (int y = 0; y < cols; y++) {
+            
+            if ((x*cols+y) % m_threadCount != m_threadNumber) {
+                continue;
+            }
+
+            qDebug() << "Thread #" << m_threadNumber << ": Generating tile " 
+                     << x * cols + y << "of" 
+                     << rows * cols;
+
+            PixelMap sourceTile = m_parent->m_source->getTile(x, y);
+            PixelMap *bmu = nullptr;
+            int bmuDistance = 0;
+            for (PixelMap *unit : icons) {
+                if (cooldown.contains(unit)) {
+                    continue;
+                }
+                int distance = sourceTile.distance(unit);
+                if (bmu == nullptr || distance < bmuDistance) {
+                    bmu = unit;
+                    bmuDistance = distance;
+                }
+            }
+            m_parent->m_mosaic->setTile(x, y, bmu);
+            
+            cooldown.insert(bmu, 100);
+            for (PixelMap *key : cooldown.keys()) {
+                if (cooldown.value(key) == 1) {
+                    cooldown.remove(key);
+                } else {
+                    cooldown[key]--;
+                }
+            }
+
+        }
+    }
+}
 
 Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
     : m_repository(ir)
@@ -13,25 +65,17 @@ Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
 
 void Generator::generate()
 {
-    int i = 0;
-    QVector<PixelMap*> icons = m_repository->icons();
-
-    //Each tile
-    for (int x = 0; x < m_mosaic->rows(); x++) {
-        for (int y = 0; y < m_mosaic->columns(); y++) {
-
-            PixelMap sourceTile = m_source->getTile(x, y);
-            QMap<int, PixelMap*> bmuMap;
-            for (PixelMap *unit : icons) {
-                int distance = sourceTile.distance(unit);
-                bmuMap.insert(distance, unit);
-            }
-            PixelMap *bmu = bmuMap.begin().value();
-            m_mosaic->setTile(x, y, bmu);
-
-        }
+    //Spawning threads
+    QVector<QThread*> threads;
+    for (int i = 0; i < m_threadCount; i++) {
+        QThread *t = new GeneratorRunner(this, i, m_threadCount);
+        threads.append(t);
+        t->start();
     }
-
+    for (QThread* t : threads) {
+        t->wait();
+        delete t;
+    }
 }
 
 IconRepository* Generator::iconRepository()
@@ -42,6 +86,11 @@ IconRepository* Generator::iconRepository()
 Mosaic* Generator::mosaic()
 {
     return m_mosaic;
+}
+
+void Generator::setThreadCount(int n)
+{
+    m_threadCount = n;
 }
 
 }

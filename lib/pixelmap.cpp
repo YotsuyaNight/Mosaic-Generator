@@ -1,4 +1,4 @@
-#include <algorithm>
+#include <cmath>
 #include "pixelmap.h"
 
 namespace MosaicGenerator {
@@ -71,9 +71,9 @@ int PixelMap::distance(PixelMap *pm)
     int w = std::min(m_w, pm->m_w);
     for (int x = 0; x < h; x++) {
         for (int y = 0; y < w; y++) {
-            distance += std::abs(red(m_data[x][y]) - red(pm->m_data[x][y]))
-                     +  std::abs(green(m_data[x][y]) - green(pm->m_data[x][y]))
-                     +  std::abs(blue(m_data[x][y]) - blue(pm->m_data[x][y]));
+            distance += std::pow(red(m_data[x][y]) - red(pm->m_data[x][y]), 2)
+                     +  std::pow(green(m_data[x][y]) - green(pm->m_data[x][y]), 2)
+                     +  std::pow(blue(m_data[x][y]) - blue(pm->m_data[x][y]), 2);
         }
     }
     return distance;
