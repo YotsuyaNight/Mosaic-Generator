@@ -30,7 +30,7 @@ private:
     int m_cols;
     int m_tw;
     int m_th;
-    QVector<QVector<PixelMap*>> m_tiles;
+    PixelMap ***m_tiles;
 };
 
 }

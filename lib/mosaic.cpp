@@ -8,14 +8,14 @@ void Mosaic::initialize(int rows, int cols, int tw, int th)
     m_cols = cols;
     m_tw = tw;
     m_th = th;
-    m_tiles = QVector<QVector<PixelMap*>>();
+    m_tiles = new PixelMap**[rows];
     for (int x = 0; x < rows; x++) {
-        QVector<PixelMap*> row;
+        PixelMap **row = new PixelMap*[cols];
         for (int y = 0; y < cols; y++) {
             PixelMap *pm = new PixelMap(tw, th);
-            row.append(pm);
+            row[y] = pm;
         }
-        m_tiles.append(row);
+        m_tiles[x] = row;
     }
 }
 
@@ -42,9 +42,13 @@ Mosaic::Mosaic(QImage image, int tw, int th)
 
 Mosaic::~Mosaic()
 {
-    for (QVector<PixelMap*> row : m_tiles) {
-        qDeleteAll(row);
+    for (int x = 0; x < m_rows; x++) {
+        for (int y = 0; y < m_cols; y++) {
+            delete m_tiles[x][y];
+        }
+        delete[] m_tiles[x];
     }
+    delete[] m_tiles;
 }
 
 void Mosaic::setTile(int x, int y, PixelMap* pm)
