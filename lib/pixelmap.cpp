@@ -23,7 +23,7 @@ PixelMap::PixelMap(const QImage &image)
     for (int x = 0; x < m_h; x++) {
         m_data[x] = new uint[m_w];
         for (int y = 0; y < m_w; y++) {
-            m_data[x][y] = image.pixel(x, y);
+            m_data[x][y] = image.pixel(y, x);
         }
     }
 }
