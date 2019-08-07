@@ -9,8 +9,9 @@ namespace MosaicGenerator {
 
 class GeneratorRunner;
 
-class Generator
+class Generator : public QObject
 {
+    Q_OBJECT
     friend class GeneratorRunner;
 
 public:
@@ -21,23 +22,35 @@ public:
     Mosaic* mosaic();
     void setThreadCount(int n);
 
+signals:
+    void finished();
+
+private slots:
+    void slotRunnerFinished(GeneratorRunner *thread);
+
 private:
     int m_threadCount = 1;
     Mosaic *m_source;
     Mosaic *m_mosaic;
     IconRepository *m_repository;
+    QVector<GeneratorRunner*> m_runners;
 };
 
 class GeneratorRunner : public QThread
 {
     Q_OBJECT
-    
+
 public:
     GeneratorRunner(Generator* parent, int threadNumber, int threadCount);
     void run() override;
+
     Generator *m_parent;
     int m_threadNumber;
     int m_threadCount;
+    
+signals:
+    void finished(GeneratorRunner *thread);
+
 };
 
 }

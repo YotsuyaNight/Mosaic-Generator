@@ -8,6 +8,7 @@ set(SOURCES
     pixelmap.cpp
     mosaic.cpp
     generator.cpp
+    controller.cpp
 )
 
 add_library(libmg STATIC ${SOURCES})

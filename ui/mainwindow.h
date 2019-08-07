@@ -1,19 +1,23 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QWidget>
 #include "ui_mainwindow.h"
 
 namespace MosaicGenerator {
 
-class MainWindow : public QWidget, public Ui::MainWindow
+class MainWindow : public QMainWindow, public Ui::MainWindow
 {
-Q_OBJECT
-public:
-    explicit MainWindow(QWidget *parent = 0);
-    virtual ~MainWindow() override;
+    Q_OBJECT
 
-private:
+public:
+    explicit MainWindow();
+
+private slots:
+    void chooseImage();
+    void chooseIconDirectory();
+    void generate();
+    void checkFieldsValid();
+
 };
 
 }

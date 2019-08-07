@@ -1,15 +1,79 @@
 #include "mainwindow.h"
+#include "controller.h"
+#include "iconrepository.h"
+#include "generator.h"
+#include <QFileDialog>
+#include <QThread>
+#include <QDebug>
 
 namespace MosaicGenerator {
 
-MainWindow::MainWindow(QWidget *parent) 
-    : QWidget(parent)
+MainWindow::MainWindow()
 {
     setupUi(this);
+
+    connect(buttonChooseIconDir, &QPushButton::clicked, this, &MainWindow::chooseIconDirectory);
+    connect(buttonChooseImage, &QPushButton::clicked, this, &MainWindow::chooseImage);
+    connect(buttonGenerate, &QPushButton::clicked, this, &MainWindow::generate);
+
+    threadCount->setValue(QThread::idealThreadCount() / 2);
+    threadCount->setMaximum(QThread::idealThreadCount());
+
+    setFocus();
 }
 
-MainWindow::~MainWindow()
+void MainWindow::chooseImage()
 {
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    if (dialog.exec()) {
+        QString file = dialog.selectedFiles()[0];
+        imagePath->setText(file);
+    }
+    checkFieldsValid();
+}
+
+void MainWindow::chooseIconDirectory()
+{
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setOption(QFileDialog::ShowDirsOnly, true);
+    if (dialog.exec()) {
+        QString file = dialog.selectedFiles()[0];
+        iconDirPath->setText(file);
+    }
+    checkFieldsValid();
+}
+
+void MainWindow::generate()
+{
+    IconRepository *ir = new IconRepository(iconDirPath->text());
+    QImage *img = new QImage(imagePath->text());
+
+    qDebug() << "Generator starting with parameters:";
+    qDebug() << "Icon repository path:" << iconDirPath->text();
+    qDebug() << "Source image path:" << imagePath->text();
+    qDebug() << "Uniqueness:" << uniqueness->value();
+    qDebug() << "Tile size:" << iconSideLength->value();
+    qDebug() << "Threads count:" << threadCount->value();
+
+    Controller::self()->setIconRepository(ir);
+    Controller::self()->setSourceImage(img);
+    Controller::self()->setThreadCount(threadCount->value());
+    Controller::self()->setTileWidth(60);
+    Controller::self()->setTileHeight(60);
+    Controller::self()->startGenerator();
+}
+
+void MainWindow::checkFieldsValid()
+{
+    if (!imagePath->text().isEmpty() &&
+        !iconDirPath->text().isEmpty())
+    {
+        buttonGenerate->setEnabled(true);
+    } else {
+        buttonGenerate->setEnabled(false);
+    }
 }
 
 }

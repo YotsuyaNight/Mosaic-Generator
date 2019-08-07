@@ -53,6 +53,7 @@ void GeneratorRunner::run()
 
         }
     }
+    emit finished(this);
 }
 
 Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
@@ -66,15 +67,20 @@ Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
 void Generator::generate()
 {
     //Spawning threads
-    QVector<QThread*> threads;
     for (int i = 0; i < m_threadCount; i++) {
-        QThread *t = new GeneratorRunner(this, i, m_threadCount);
-        threads.append(t);
+        GeneratorRunner *t = new GeneratorRunner(this, i, m_threadCount);
+        m_runners.append(t);
+        connect(t, &GeneratorRunner::finished, this, &Generator::slotRunnerFinished);
         t->start();
     }
-    for (QThread* t : threads) {
-        t->wait();
-        delete t;
+}
+
+void Generator::slotRunnerFinished(GeneratorRunner *thread) {
+    m_runners.removeOne(thread);
+    thread->wait();
+    delete thread;
+    if (m_runners.size() == 0) {
+        emit finished();
     }
 }
 

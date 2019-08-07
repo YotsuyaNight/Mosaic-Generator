@@ -1,15 +1,18 @@
 #include <QApplication>
-#include "mainwindow.h"
+#include <QMainWindow>
 #include "iconrepository.h"
+#include "mainwindow.h"
+#include "controller.h"
 
 int main(int argc, char **argv)
 {
-    QApplication app (argc, argv);
+    QApplication app(argc, argv);
 
-    MosaicGenerator::MainWindow window;
-    window.show();
+    MosaicGenerator::MainWindow mw;
+    mw.show();
 
-    MosaicGenerator::IconRepository ir("/home/yotsuya/icons");
+    int status = app.exec();
 
-    return app.exec();
+    delete MosaicGenerator::Controller::self();
+    return status;
 }
