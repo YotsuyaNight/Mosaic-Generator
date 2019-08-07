@@ -26,6 +26,9 @@ public:
     void setTileHeight(int px);
     QImage mosaic();
 
+signals:
+    void generatorFinished();
+
 private:
     Controller();
 

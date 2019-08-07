@@ -15,6 +15,7 @@ MainWindow::MainWindow()
     connect(buttonChooseIconDir, &QPushButton::clicked, this, &MainWindow::chooseIconDirectory);
     connect(buttonChooseImage, &QPushButton::clicked, this, &MainWindow::chooseImage);
     connect(buttonGenerate, &QPushButton::clicked, this, &MainWindow::generate);
+    connect(Controller::self(), &Controller::generatorFinished, this, &MainWindow::generatorFinished);
 
     threadCount->setValue(QThread::idealThreadCount() / 2);
     threadCount->setMaximum(QThread::idealThreadCount());
@@ -47,6 +48,8 @@ void MainWindow::chooseIconDirectory()
 
 void MainWindow::generate()
 {
+    progressBar->setValue(0);
+
     IconRepository *ir = new IconRepository(iconDirPath->text());
     QImage *img = new QImage(imagePath->text());
 
@@ -63,6 +66,7 @@ void MainWindow::generate()
     Controller::self()->setTileWidth(60);
     Controller::self()->setTileHeight(60);
     Controller::self()->startGenerator();
+    setUiEnabled(false);
 }
 
 void MainWindow::checkFieldsValid()
@@ -74,6 +78,22 @@ void MainWindow::checkFieldsValid()
     } else {
         buttonGenerate->setEnabled(false);
     }
+}
+
+void MainWindow::generatorFinished()
+{
+    progressBar->setValue(100);
+    setUiEnabled(true);
+}
+
+void MainWindow::setUiEnabled(bool enabled)
+{
+    buttonChooseIconDir->setEnabled(enabled);
+    buttonChooseImage->setEnabled(enabled);
+    buttonGenerate->setEnabled(enabled);
+    uniqueness->setEnabled(enabled);
+    iconSideLength->setEnabled(enabled);
+    threadCount->setEnabled(enabled);
 }
 
 }

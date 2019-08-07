@@ -13,45 +13,32 @@ void GeneratorRunner::run()
 {
     QVector<PixelMap*> icons = m_parent->m_repository->icons();
     QMap<PixelMap*, int> cooldown;
-    int rows = m_parent->m_mosaic->rows();
-    int cols = m_parent->m_mosaic->columns();
-    //Each tile
-    for (int x = 0; x < rows; x++) {
-        for (int y = 0; y < cols; y++) {
-            
-            if ((x*cols+y) % m_threadCount != m_threadNumber) {
-                continue;
-            }
+    while (true) {
 
-            qDebug() << "Thread #" << m_threadNumber << ": Generating tile " 
-                     << x * cols + y << "of" 
-                     << rows * cols;
-
-            PixelMap sourceTile = m_parent->m_source->getTile(x, y);
-            PixelMap *bmu = nullptr;
-            int bmuDistance = 0;
-            for (PixelMap *unit : icons) {
-                if (cooldown.contains(unit)) {
-                    continue;
-                }
-                int distance = sourceTile.distance(unit);
-                if (bmu == nullptr || distance < bmuDistance) {
-                    bmu = unit;
-                    bmuDistance = distance;
-                }
-            }
-            m_parent->m_mosaic->setTile(x, y, bmu);
-            
-            cooldown.insert(bmu, 100);
-            for (PixelMap *key : cooldown.keys()) {
-                if (cooldown.value(key) == 1) {
-                    cooldown.remove(key);
-                } else {
-                    cooldown[key]--;
-                }
-            }
-
+        //Obtain mutex and get next tile
+        m_parent->m_repoAccessMutex.lock();
+        if (m_parent->m_lastTile) {
+            m_parent->m_repoAccessMutex.unlock();
+            break;
         }
+        int x = m_parent->m_nextRow;
+        int y = m_parent->m_nextCol;
+        PixelMap sourceTile = m_parent->m_source->getTile(x, y);
+        m_parent->nextTile();
+        m_parent->m_repoAccessMutex.unlock();
+
+        //Process
+        PixelMap *bmu = nullptr;
+        int bmuDistance = 0;
+        for (PixelMap *unit : icons) {
+            int distance = sourceTile.distance(unit);
+            if (bmu == nullptr || distance < bmuDistance) {
+                bmu = unit;
+                bmuDistance = distance;
+            }
+        }
+        m_parent->m_mosaic->setTile(x, y, bmu);
+        
     }
     emit finished(this);
 }
@@ -66,6 +53,9 @@ Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
 
 void Generator::generate()
 {
+    m_nextRow = 0;
+    m_nextCol = 0;
+    m_lastTile = false;
     //Spawning threads
     for (int i = 0; i < m_threadCount; i++) {
         GeneratorRunner *t = new GeneratorRunner(this, i, m_threadCount);
@@ -75,11 +65,23 @@ void Generator::generate()
     }
 }
 
+void Generator::nextTile()
+{
+    m_nextCol++;
+    if (m_nextCol == m_source->columns()) {
+        m_nextCol = 0;
+        m_nextRow++;
+    }
+    if (m_nextRow == m_source->rows()) {
+        m_lastTile = true;
+    }
+}
+
 void Generator::slotRunnerFinished(GeneratorRunner *thread) {
     m_runners.removeOne(thread);
     thread->wait();
     delete thread;
-    if (m_runners.size() == 0) {
+    if (m_runners.isEmpty()) {
         emit finished();
     }
 }

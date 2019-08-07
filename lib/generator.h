@@ -1,6 +1,7 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include <QMutex>
 #include <QThread>
 #include "iconrepository.h"
 #include "mosaic.h"
@@ -29,11 +30,17 @@ private slots:
     void slotRunnerFinished(GeneratorRunner *thread);
 
 private:
+    void nextTile();
+
     int m_threadCount = 1;
     Mosaic *m_source;
     Mosaic *m_mosaic;
     IconRepository *m_repository;
     QVector<GeneratorRunner*> m_runners;
+    QMutex m_repoAccessMutex;
+    int m_nextRow;
+    int m_nextCol;
+    bool m_lastTile;
 };
 
 class GeneratorRunner : public QThread

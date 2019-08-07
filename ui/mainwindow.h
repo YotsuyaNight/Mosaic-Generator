@@ -17,6 +17,10 @@ private slots:
     void chooseIconDirectory();
     void generate();
     void checkFieldsValid();
+    void generatorFinished();
+
+private:
+    void setUiEnabled(bool enabled);
 
 };
 
