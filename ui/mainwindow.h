@@ -18,6 +18,7 @@ private slots:
     void generate();
     void checkFieldsValid();
     void generatorFinished();
+    void updateProgress(int progress);
 
 private:
     void setUiEnabled(bool enabled);

@@ -21,10 +21,12 @@ public:
     void generate();
     IconRepository* iconRepository();
     Mosaic* mosaic();
+    int maxProgress();
     void setThreadCount(int n);
 
 signals:
     void finished();
+    void progressTick(int progress);
 
 private slots:
     void slotRunnerFinished(GeneratorRunner *thread);

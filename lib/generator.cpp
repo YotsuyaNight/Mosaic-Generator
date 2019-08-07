@@ -75,6 +75,7 @@ void Generator::nextTile()
     if (m_nextRow == m_source->rows()) {
         m_lastTile = true;
     }
+    emit progressTick(m_nextRow * m_source->columns() + m_nextCol);
 }
 
 void Generator::slotRunnerFinished(GeneratorRunner *thread) {
@@ -94,6 +95,11 @@ IconRepository* Generator::iconRepository()
 Mosaic* Generator::mosaic()
 {
     return m_mosaic;
+}
+
+int Generator::maxProgress()
+{
+    return m_source->rows() * m_source->columns();
 }
 
 void Generator::setThreadCount(int n)

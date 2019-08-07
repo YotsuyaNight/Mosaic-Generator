@@ -15,6 +15,7 @@ MainWindow::MainWindow()
     connect(buttonChooseIconDir, &QPushButton::clicked, this, &MainWindow::chooseIconDirectory);
     connect(buttonChooseImage, &QPushButton::clicked, this, &MainWindow::chooseImage);
     connect(buttonGenerate, &QPushButton::clicked, this, &MainWindow::generate);
+    connect(Controller::self(), &Controller::generatorProgress, this, &MainWindow::updateProgress);
     connect(Controller::self(), &Controller::generatorFinished, this, &MainWindow::generatorFinished);
 
     threadCount->setValue(QThread::idealThreadCount() / 2);
@@ -63,10 +64,12 @@ void MainWindow::generate()
     Controller::self()->setIconRepository(ir);
     Controller::self()->setSourceImage(img);
     Controller::self()->setThreadCount(threadCount->value());
-    Controller::self()->setTileWidth(60);
-    Controller::self()->setTileHeight(60);
+    Controller::self()->setTileWidth(iconSideLength->value());
+    Controller::self()->setTileHeight(iconSideLength->value());
     Controller::self()->startGenerator();
     setUiEnabled(false);
+
+    progressBar->setMaximum(Controller::self()->maxProgress());
 }
 
 void MainWindow::checkFieldsValid()
@@ -82,7 +85,7 @@ void MainWindow::checkFieldsValid()
 
 void MainWindow::generatorFinished()
 {
-    progressBar->setValue(100);
+    progressBar->setValue(Controller::self()->maxProgress());
     setUiEnabled(true);
 }
 
@@ -94,6 +97,11 @@ void MainWindow::setUiEnabled(bool enabled)
     uniqueness->setEnabled(enabled);
     iconSideLength->setEnabled(enabled);
     threadCount->setEnabled(enabled);
+}
+
+void MainWindow::updateProgress(int progress)
+{
+    progressBar->setValue(progress);
 }
 
 }

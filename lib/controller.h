@@ -25,9 +25,11 @@ public:
     void setTileWidth(int px);
     void setTileHeight(int px);
     QImage mosaic();
+    int maxProgress();
 
 signals:
     void generatorFinished();
+    void generatorProgress(int progress);
 
 private:
     Controller();

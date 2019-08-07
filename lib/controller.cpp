@@ -30,6 +30,7 @@ void Controller::startGenerator()
     }
     m_generator = new Generator(*m_sourceImage, m_repository, m_tw, m_th);
     m_generator->setThreadCount(m_threadCount);
+    connect(m_generator, &Generator::progressTick, this, &Controller::generatorProgress);
     connect(m_generator, &Generator::finished, this, &Controller::generatorFinished);
     m_generator->generate();
 }
@@ -53,6 +54,11 @@ void Controller::setSourceImage(QImage *image)
 QImage Controller::mosaic()
 {
     return QImage();
+}
+
+int Controller::maxProgress()
+{
+    return m_generator->maxProgress();
 }
 
 void Controller::setThreadCount(int n)
