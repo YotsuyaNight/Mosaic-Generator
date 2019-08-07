@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCES
     pixelmap_test.cpp
     mosaic_test.cpp
-    generator_test.cpp
 )
 
 add_executable(unittests main.cpp catch.hpp ${SOURCES})
