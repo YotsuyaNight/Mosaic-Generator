@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.1.0)
 project(mosaicgenerator_lib)
 
-find_package(Qt5 COMPONENTS Widgets)
-
 set(SOURCES
     iconrepository.cpp
     pixelmap.cpp
@@ -11,7 +9,7 @@ set(SOURCES
     controller.cpp
 )
 
-add_library(libmg STATIC ${SOURCES})
-target_link_libraries(libmg Qt5::Widgets)
+add_library(mgcore ${SOURCES})
+target_link_libraries(mgcore Qt5::Widgets)
 
-target_include_directories(libmg PUBLIC .)
+target_include_directories(mgcore PUBLIC .)
