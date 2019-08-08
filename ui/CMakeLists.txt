@@ -5,7 +5,9 @@ find_package(Qt5 COMPONENTS Widgets)
 
 set(SOURCES
     mainwindow.cpp
+    mosaicwindow.cpp
     mainwindow.ui
+    mosaicwindow.ui
 )
 
 add_library(libmgui STATIC ${SOURCES})

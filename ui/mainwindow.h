@@ -5,12 +5,15 @@
 
 namespace MosaicGenerator {
 
+class MosaicWindow;
+
 class MainWindow : public QMainWindow, public Ui::MainWindow
 {
     Q_OBJECT
 
 public:
     explicit MainWindow();
+    ~MainWindow() override;
 
 private slots:
     void chooseImage();
@@ -22,6 +25,8 @@ private slots:
 
 private:
     void setUiEnabled(bool enabled);
+
+    QVector<MosaicWindow*> m_mosaicWindows;
 
 };
 

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "mosaicwindow.h"
 #include "controller.h"
 #include "iconrepository.h"
 #include "generator.h"
@@ -22,6 +23,13 @@ MainWindow::MainWindow()
     threadCount->setMaximum(QThread::idealThreadCount());
 
     setFocus();
+}
+
+MainWindow::~MainWindow()
+{
+    for (MosaicWindow *window : m_mosaicWindows) {
+        delete window;
+    }
 }
 
 void MainWindow::chooseImage()
@@ -87,6 +95,9 @@ void MainWindow::generatorFinished()
 {
     progressBar->setValue(Controller::self()->maxProgress());
     setUiEnabled(true);
+    MosaicWindow *window = new MosaicWindow;
+    m_mosaicWindows.append(window);
+    window->open();
 }
 
 void MainWindow::setUiEnabled(bool enabled)

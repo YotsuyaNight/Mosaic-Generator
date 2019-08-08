@@ -53,7 +53,7 @@ void Controller::setSourceImage(QImage *image)
 
 QImage Controller::mosaic()
 {
-    return QImage();
+    return m_generator->mosaic()->toImage();
 }
 
 int Controller::maxProgress()
