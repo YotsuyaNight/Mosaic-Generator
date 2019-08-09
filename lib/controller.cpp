@@ -47,7 +47,12 @@ void Controller::startGenerator()
     if (m_generator != nullptr) {
         delete m_generator;
     }
-    m_generator = new Generator(*m_sourceImage, m_repository, m_tw, m_th);
+    //Prepare image
+    int width = (m_sourceImage->width() / m_imageBlockSize) * m_iconSize;
+    int height = (m_sourceImage->height() / m_imageBlockSize) * m_iconSize;
+    QImage scaledImage = m_sourceImage->scaled(width, height, Qt::KeepAspectRatio);
+    //Prepare and run generator
+    m_generator = new Generator(scaledImage, m_repository, m_iconSize, m_iconSize);
     m_generator->setThreadCount(m_threadCount);
     connect(m_generator, &Generator::progressTick, this, &Controller::generatorProgress);
     connect(m_generator, &Generator::finished, this, &Controller::generatorFinished);
@@ -63,12 +68,12 @@ int Controller::loadIconRepository(QString path)
     return m_repository->icons().size();
 }
 
-void Controller::setSourceImage(QImage *image)
+void Controller::setSourceImage(QString path)
 {
     if (m_repository != nullptr) {
         delete m_sourceImage;
     }
-    m_sourceImage = image;
+    m_sourceImage = new QImage(path);
 }
 
 QImage Controller::mosaic()
@@ -86,14 +91,14 @@ void Controller::setThreadCount(int n)
     m_threadCount = n;
 }
 
-void Controller::setTileWidth(int px)
+void Controller::setIconSize(int px)
 {
-    m_tw = px;
+    m_iconSize = px;
 }
 
-void Controller::setTileHeight(int px)
+void Controller::setImageBlockSize(int px)
 {
-    m_th = px;
+    m_imageBlockSize = px;
 }
 
 }

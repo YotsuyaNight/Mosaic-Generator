@@ -38,10 +38,10 @@ public:
     static Controller* self();
 
     void startGenerator();
-    void setSourceImage(QImage *image);
+    void setSourceImage(QString path);
     void setThreadCount(int n);
-    void setTileWidth(int px);
-    void setTileHeight(int px);
+    void setIconSize(int px);
+    void setImageBlockSize(int px);
     int loadIconRepository(QString path);
     QImage mosaic();
     int maxProgress();
@@ -58,8 +58,8 @@ private:
     Generator *m_generator = nullptr;
     QImage *m_sourceImage = nullptr;
     int m_threadCount;
-    int m_tw = 1;
-    int m_th = 1;
+    int m_iconSize = 1;
+    int m_imageBlockSize = 1;
 };
 
 }

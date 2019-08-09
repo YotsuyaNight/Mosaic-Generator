@@ -86,20 +86,17 @@ void MainWindow::generate()
 {
     progressBar->setValue(0);
 
-    IconRepository *ir = new IconRepository(iconDirPath->text());
-    QImage *img = new QImage(imagePath->text());
-
     qDebug() << "Generator starting with parameters:";
     qDebug() << "Icon repository path:" << iconDirPath->text();
     qDebug() << "Source image path:" << imagePath->text();
     qDebug() << "Uniqueness:" << uniqueness->value();
-    qDebug() << "Tile size:" << iconLength->value();
+    qDebug() << "Icon size:" << iconLength->value();
     qDebug() << "Threads count:" << threadCount->value();
 
-    Controller::self()->setSourceImage(img);
     Controller::self()->setThreadCount(threadCount->value());
-    Controller::self()->setTileWidth(iconLength->value());
-    Controller::self()->setTileHeight(iconLength->value());
+    Controller::self()->setIconSize(iconLength->value());
+    Controller::self()->setImageBlockSize(imageBlockSize->value());
+    Controller::self()->setSourceImage(imagePath->text());
     Controller::self()->startGenerator();
     setUiEnabled(false);
 
@@ -133,6 +130,7 @@ void MainWindow::setUiEnabled(bool enabled)
     uniqueness->setEnabled(enabled);
     iconLength->setEnabled(enabled);
     threadCount->setEnabled(enabled);
+    imageBlockSize->setEnabled(enabled);
 }
 
 void MainWindow::updateProgress(int progress)
