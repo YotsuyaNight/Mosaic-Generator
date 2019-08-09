@@ -59,7 +59,7 @@ void MainWindow::chooseImage()
         QString file = dialog.selectedFiles()[0];
         imagePath->setText(file);
     }
-    checkFieldsValid();
+    checkSettings();
 }
 
 void MainWindow::chooseIconDirectory()
@@ -70,8 +70,16 @@ void MainWindow::chooseIconDirectory()
     if (dialog.exec()) {
         QString file = dialog.selectedFiles()[0];
         iconDirPath->setText(file);
+        int iconsLoaded = Controller::self()->loadIconRepository(file);
+        if (iconsLoaded > 0) {
+            loadedIconsCount->setText("Detected " + QString::number(iconsLoaded) + " images in specified directory.");
+            m_validRepository = true;
+        } else {
+            loadedIconsCount->setText("No images detected in specified directory!");
+            m_validRepository = false;
+        }
     }
-    checkFieldsValid();
+    checkSettings();
 }
 
 void MainWindow::generate()
@@ -85,24 +93,22 @@ void MainWindow::generate()
     qDebug() << "Icon repository path:" << iconDirPath->text();
     qDebug() << "Source image path:" << imagePath->text();
     qDebug() << "Uniqueness:" << uniqueness->value();
-    qDebug() << "Tile size:" << iconSideLength->value();
+    qDebug() << "Tile size:" << iconLength->value();
     qDebug() << "Threads count:" << threadCount->value();
 
-    Controller::self()->setIconRepository(ir);
     Controller::self()->setSourceImage(img);
     Controller::self()->setThreadCount(threadCount->value());
-    Controller::self()->setTileWidth(iconSideLength->value());
-    Controller::self()->setTileHeight(iconSideLength->value());
+    Controller::self()->setTileWidth(iconLength->value());
+    Controller::self()->setTileHeight(iconLength->value());
     Controller::self()->startGenerator();
     setUiEnabled(false);
 
     progressBar->setMaximum(Controller::self()->maxProgress());
 }
 
-void MainWindow::checkFieldsValid()
+void MainWindow::checkSettings()
 {
-    if (!imagePath->text().isEmpty() &&
-        !iconDirPath->text().isEmpty())
+    if (!imagePath->text().isEmpty() && m_validRepository)
     {
         buttonGenerate->setEnabled(true);
     } else {
@@ -125,7 +131,7 @@ void MainWindow::setUiEnabled(bool enabled)
     buttonChooseImage->setEnabled(enabled);
     buttonGenerate->setEnabled(enabled);
     uniqueness->setEnabled(enabled);
-    iconSideLength->setEnabled(enabled);
+    iconLength->setEnabled(enabled);
     threadCount->setEnabled(enabled);
 }
 

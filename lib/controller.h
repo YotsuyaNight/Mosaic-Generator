@@ -38,11 +38,11 @@ public:
     static Controller* self();
 
     void startGenerator();
-    void setIconRepository(IconRepository *repository);
     void setSourceImage(QImage *image);
     void setThreadCount(int n);
     void setTileWidth(int px);
     void setTileHeight(int px);
+    int loadIconRepository(QString path);
     QImage mosaic();
     int maxProgress();
 

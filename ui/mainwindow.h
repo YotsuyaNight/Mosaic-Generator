@@ -38,7 +38,7 @@ private slots:
     void chooseImage();
     void chooseIconDirectory();
     void generate();
-    void checkFieldsValid();
+    void checkSettings();
     void generatorFinished();
     void updateProgress(int progress);
 
@@ -46,6 +46,7 @@ private:
     void setUiEnabled(bool enabled);
 
     QVector<MosaicWindow*> m_mosaicWindows;
+    bool m_validRepository = false;
 
 };
 

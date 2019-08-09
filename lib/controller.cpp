@@ -54,12 +54,13 @@ void Controller::startGenerator()
     m_generator->generate();
 }
 
-void Controller::setIconRepository(IconRepository *repository)
+int Controller::loadIconRepository(QString path)
 {
     if (m_repository != nullptr) {
         delete m_repository;
     }
-    m_repository = repository;
+    m_repository = new IconRepository(path);
+    return m_repository->icons().size();
 }
 
 void Controller::setSourceImage(QImage *image)
