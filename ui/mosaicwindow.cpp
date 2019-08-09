@@ -20,22 +20,50 @@
 #include "mosaicwindow.h"
 #include "controller.h"
 #include <QFileDialog>
+#include <QGraphicsView>
+#include <QGraphicsPixmapItem>
+#include <QWheelEvent>
 
 namespace MosaicGenerator {
+
+class ZoomGraphicsView : public QGraphicsView
+{
+public:
+    ZoomGraphicsView(QGraphicsScene *scene, QWidget *parent = nullptr)
+        : QGraphicsView(scene, parent)
+    {
+        setDragMode(QGraphicsView::ScrollHandDrag);
+    }
+
+protected:
+    void wheelEvent(QWheelEvent *event)
+    {
+        if (event->delta() > 0) {
+            scale(1.2, 1.2);
+        } else {
+            scale(0.8, 0.8);
+        }
+    }
+};
 
 MosaicWindow::MosaicWindow(QWidget *parent)
     : QWidget(parent)
 {
     setupUi(this);
-    connect(buttonSaveAs, &QPushButton::clicked, this, &MosaicWindow::saveAs);
     m_mosaic = Controller::self()->mosaic();
+    connect(buttonSaveAs, &QPushButton::clicked, this, &MosaicWindow::saveAs);
+
+    QGraphicsScene *scene = new QGraphicsScene();
+    imageView = new ZoomGraphicsView(scene, this);
+    windowLayout->insertWidget(0, imageView);
+    imageView->show();
 }
 
 void MosaicWindow::open()
 {
-    QImage scaled = m_mosaic.scaled(imageLabel->size(), Qt::KeepAspectRatio);
-    QPixmap pixmap = QPixmap::fromImage(scaled);
-    imageLabel->setPixmap(pixmap);
+    QPixmap pixmap = QPixmap::fromImage(m_mosaic);
+    QGraphicsPixmapItem *pixmapItem = new QGraphicsPixmapItem(pixmap);
+    imageView->scene()->addItem(pixmapItem);
     show();
 }
 

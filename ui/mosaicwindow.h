@@ -22,6 +22,8 @@
 
 #include "ui_mosaicwindow.h"
 
+class QGraphicsView;
+
 namespace MosaicGenerator {
 
 class MosaicWindow : public QWidget, public Ui::MosaicWindow
@@ -37,6 +39,7 @@ private slots:
     void saveAs();
 
 private:
+    QGraphicsView *imageView;
     QImage m_mosaic;
 
 };
