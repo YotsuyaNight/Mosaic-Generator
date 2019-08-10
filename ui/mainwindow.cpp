@@ -19,6 +19,7 @@
 
 #include "mainwindow.h"
 #include "mosaicwindow.h"
+#include "fileselectlineedit.hpp"
 #include "controller.h"
 #include "iconrepository.h"
 #include "generator.h"
@@ -32,8 +33,14 @@ MainWindow::MainWindow()
 {
     setupUi(this);
 
-    connect(buttonChooseIconDir, &QPushButton::clicked, this, &MainWindow::chooseIconDirectory);
-    connect(buttonChooseImage, &QPushButton::clicked, this, &MainWindow::chooseImage);
+    iconDirPath = new FileSelectLineEdit(mainWidget);
+    imagePath = new FileSelectLineEdit(mainWidget);
+    dynamic_cast<QGridLayout*>(iconSettingsBox->layout())->addWidget(iconDirPath, 0, 1);
+    dynamic_cast<QGridLayout*>(mosaicSettingsBox->layout())->addWidget(imagePath, 0, 1);
+
+    connect(iconDirPath, &FileSelectLineEdit::clicked, this, &MainWindow::chooseIconDirectory);
+    connect(imagePath, &FileSelectLineEdit::clicked, this, &MainWindow::chooseImage);
+    connect(buttonLoadIcons, &QPushButton::clicked, this, &MainWindow::loadIconDirectory);
     connect(buttonGenerate, &QPushButton::clicked, this, &MainWindow::generate);
     connect(Controller::self(), &Controller::generatorProgress, this, &MainWindow::updateProgress);
     connect(Controller::self(), &Controller::generatorFinished, this, &MainWindow::generatorFinished);
@@ -70,14 +77,18 @@ void MainWindow::chooseIconDirectory()
     if (dialog.exec()) {
         QString file = dialog.selectedFiles()[0];
         iconDirPath->setText(file);
-        int iconsLoaded = Controller::self()->loadIconRepository(file);
-        if (iconsLoaded > 0) {
-            loadedIconsCount->setText("Detected " + QString::number(iconsLoaded) + " images in specified directory.");
-            m_validRepository = true;
-        } else {
-            loadedIconsCount->setText("No images detected in specified directory!");
-            m_validRepository = false;
-        }
+    }
+}
+
+void MainWindow::loadIconDirectory()
+{
+    int iconsLoaded = Controller::self()->loadIconRepository(iconDirPath->text());
+    if (iconsLoaded > 0) {
+        loadedIconsCount->setText("Detected " + QString::number(iconsLoaded) + " images in specified directory.");
+        m_validRepository = true;
+    } else {
+        loadedIconsCount->setText("No images detected in specified directory!");
+        m_validRepository = false;
     }
     checkSettings();
 }
@@ -126,8 +137,9 @@ void MainWindow::generatorFinished()
 
 void MainWindow::setUiEnabled(bool enabled)
 {
-    buttonChooseIconDir->setEnabled(enabled);
-    buttonChooseImage->setEnabled(enabled);
+    iconDirPath->setEnabled(enabled);
+    imagePath->setEnabled(enabled);
+    buttonLoadIcons->setEnabled(enabled);
     buttonGenerate->setEnabled(enabled);
     randomness->setEnabled(enabled);
     iconLength->setEnabled(enabled);

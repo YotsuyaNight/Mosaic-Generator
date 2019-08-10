@@ -25,6 +25,7 @@
 namespace MosaicGenerator {
 
 class MosaicWindow;
+class FileSelectLineEdit;
 
 class MainWindow : public QMainWindow, public Ui::MainWindow
 {
@@ -37,6 +38,7 @@ public:
 private slots:
     void chooseImage();
     void chooseIconDirectory();
+    void loadIconDirectory();
     void generate();
     void checkSettings();
     void generatorFinished();
@@ -45,6 +47,8 @@ private slots:
 private:
     void setUiEnabled(bool enabled);
 
+    FileSelectLineEdit *iconDirPath;
+    FileSelectLineEdit *imagePath;
     QVector<MosaicWindow*> m_mosaicWindows;
     bool m_validRepository = false;
 
