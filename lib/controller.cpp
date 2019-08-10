@@ -48,11 +48,11 @@ void Controller::startGenerator()
         delete m_generator;
     }
     //Prepare image
-    int width = (m_sourceImage->width() / m_imageBlockSize) * m_iconSize;
-    int height = (m_sourceImage->height() / m_imageBlockSize) * m_iconSize;
+    int width = (m_sourceImage->width() / m_imageBlockSize) * m_repository->iconSize();
+    int height = (m_sourceImage->height() / m_imageBlockSize) * m_repository->iconSize();
     QImage scaledImage = m_sourceImage->scaled(width, height, Qt::KeepAspectRatio);
     //Prepare and run generator
-    m_generator = new Generator(scaledImage, m_repository, m_iconSize, m_iconSize);
+    m_generator = new Generator(scaledImage, m_repository, m_repository->iconSize(), m_repository->iconSize());
     m_generator->setThreadCount(m_threadCount);
     m_generator->setRandomness(m_randomness);
     connect(m_generator, &Generator::progressTick, this, &Controller::generatorProgress);
@@ -60,12 +60,12 @@ void Controller::startGenerator()
     m_generator->generate();
 }
 
-int Controller::loadIconRepository(QString path)
+int Controller::loadIconRepository(QString path, int size)
 {
     if (m_repository != nullptr) {
         delete m_repository;
     }
-    m_repository = new IconRepository(path);
+    m_repository = new IconRepository(path, size);
     return m_repository->icons().size();
 }
 
@@ -98,11 +98,6 @@ void Controller::setRandomness(int n)
         n = m_repository->icons().size();
     }
     m_randomness = n;
-}
-
-void Controller::setIconSize(int px)
-{
-    m_iconSize = px;
 }
 
 void Controller::setImageBlockSize(int px)

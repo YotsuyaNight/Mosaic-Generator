@@ -41,9 +41,8 @@ public:
     void setSourceImage(QString path);
     void setThreadCount(int n);
     void setRandomness(int n);
-    void setIconSize(int px);
     void setImageBlockSize(int px);
-    int loadIconRepository(QString path);
+    int loadIconRepository(QString path, int size);
     QImage mosaic();
     int maxProgress();
 
@@ -60,7 +59,6 @@ private:
     QImage *m_sourceImage = nullptr;
     int m_threadCount;
     int m_randomness = 1;
-    int m_iconSize = 1;
     int m_imageBlockSize = 1;
 };
 

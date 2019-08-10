@@ -82,7 +82,7 @@ void MainWindow::chooseIconDirectory()
 
 void MainWindow::loadIconDirectory()
 {
-    int iconsLoaded = Controller::self()->loadIconRepository(iconDirPath->text());
+    int iconsLoaded = Controller::self()->loadIconRepository(iconDirPath->text(), iconLength->value());
     if (iconsLoaded > 0) {
         loadedIconsCount->setText("Detected " + QString::number(iconsLoaded) + " images in specified directory.");
         m_validRepository = true;
@@ -107,7 +107,6 @@ void MainWindow::generate()
 
     Controller::self()->setThreadCount(threadCount->value());
     Controller::self()->setRandomness(randomness->value());
-    Controller::self()->setIconSize(iconLength->value());
     Controller::self()->setImageBlockSize(imageBlockSize->value());
     Controller::self()->setSourceImage(imagePath->text());
     Controller::self()->startGenerator();

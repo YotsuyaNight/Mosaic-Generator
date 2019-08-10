@@ -30,13 +30,15 @@ class PixelMap;
 class IconRepository
 {
 public:
-    explicit IconRepository(QString path);
+    explicit IconRepository(QString path, int size);
     virtual ~IconRepository();
 
     QVector<PixelMap*> icons();
+    int iconSize();
 
 private:
     QVector<PixelMap*> m_icons;
+    int m_iconSize;
 };
 
 }
