@@ -91,6 +91,7 @@ void MainWindow::generate()
     qDebug() << "Source image path:" << imagePath->text();
     qDebug() << "Randomness:" << randomness->value();
     qDebug() << "Icon size:" << iconLength->value();
+    qDebug() << "Image block size:" << imageBlockSize->value();
     qDebug() << "Threads count:" << threadCount->value();
 
     Controller::self()->setThreadCount(threadCount->value());

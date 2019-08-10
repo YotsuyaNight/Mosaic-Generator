@@ -72,15 +72,15 @@ uint* PixelMap::operator[](std::size_t idx)
 }
 
 inline int red(uint color) {
-    return ((color >> 24) & 0xFF);
-}
-
-inline int green(uint color) {
     return ((color >> 16) & 0xFF);
 }
 
-inline int blue(uint color) {
+inline int green(uint color) {
     return ((color >> 8) & 0xFF);
+}
+
+inline int blue(uint color) {
+    return (color & 0xFF);
 }
 
 int PixelMap::distance(PixelMap *pm)
