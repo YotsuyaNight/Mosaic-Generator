@@ -54,6 +54,7 @@ void Controller::startGenerator()
     //Prepare and run generator
     m_generator = new Generator(scaledImage, m_repository, m_iconSize, m_iconSize);
     m_generator->setThreadCount(m_threadCount);
+    m_generator->setRandomness(m_randomness);
     connect(m_generator, &Generator::progressTick, this, &Controller::generatorProgress);
     connect(m_generator, &Generator::finished, this, &Controller::generatorFinished);
     m_generator->generate();
@@ -89,6 +90,14 @@ int Controller::maxProgress()
 void Controller::setThreadCount(int n)
 {
     m_threadCount = n;
+}
+
+void Controller::setRandomness(int n)
+{
+    if (n > m_repository->icons().size()) {
+        n = m_repository->icons().size();
+    }
+    m_randomness = n;
 }
 
 void Controller::setIconSize(int px)

@@ -19,19 +19,19 @@
 
 #include <QDebug>
 #include <QMap>
+#include <cstdlib>
 #include "generator.h"
 
 namespace MosaicGenerator {
 
-GeneratorRunner::GeneratorRunner(Generator *parent, int threadNumber, int threadCount)
-    : m_parent(parent), m_threadNumber(threadNumber), m_threadCount(threadCount)
+GeneratorRunner::GeneratorRunner(Generator *parent)
+    : m_parent(parent)
 {
 }
 
 void GeneratorRunner::run()
 {
     QVector<PixelMap*> icons = m_parent->m_repository->icons();
-    QMap<PixelMap*, int> cooldown;
     while (true) {
 
         //Obtain mutex and get next tile
@@ -47,16 +47,18 @@ void GeneratorRunner::run()
         m_parent->m_repoAccessMutex.unlock();
 
         //Process
-        PixelMap *bmu = nullptr;
-        int bmuDistance = 0;
+        QMap<int, PixelMap*> sortedUnits;
         for (PixelMap *unit : icons) {
             int distance = sourceTile.distance(unit);
-            if (bmu == nullptr || distance < bmuDistance) {
-                bmu = unit;
-                bmuDistance = distance;
-            }
+            sortedUnits.insert(distance, unit);
         }
-        m_parent->m_mosaic->setTile(x, y, bmu);
+        //Choose random tile
+        int random = 1 + (std::rand() % m_parent->m_randomness);
+        QMapIterator<int, PixelMap*> unitsIterator(sortedUnits);
+        for (int i = 0; i < random; i++) {
+            unitsIterator.next();
+        }
+        m_parent->m_mosaic->setTile(x, y, unitsIterator.value());
         
     }
     emit finished(this);
@@ -77,7 +79,7 @@ void Generator::generate()
     m_lastTile = false;
     //Spawning threads
     for (int i = 0; i < m_threadCount; i++) {
-        GeneratorRunner *t = new GeneratorRunner(this, i, m_threadCount);
+        GeneratorRunner *t = new GeneratorRunner(this);
         m_runners.append(t);
         connect(t, &GeneratorRunner::finished, this, &Generator::slotRunnerFinished);
         t->start();
@@ -124,6 +126,11 @@ int Generator::maxProgress()
 void Generator::setThreadCount(int n)
 {
     m_threadCount = n;
+}
+
+void Generator::setRandomness(int n)
+{
+    m_randomness = n;
 }
 
 }

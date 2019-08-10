@@ -89,11 +89,12 @@ void MainWindow::generate()
     qDebug() << "Generator starting with parameters:";
     qDebug() << "Icon repository path:" << iconDirPath->text();
     qDebug() << "Source image path:" << imagePath->text();
-    qDebug() << "Uniqueness:" << uniqueness->value();
+    qDebug() << "Randomness:" << randomness->value();
     qDebug() << "Icon size:" << iconLength->value();
     qDebug() << "Threads count:" << threadCount->value();
 
     Controller::self()->setThreadCount(threadCount->value());
+    Controller::self()->setRandomness(randomness->value());
     Controller::self()->setIconSize(iconLength->value());
     Controller::self()->setImageBlockSize(imageBlockSize->value());
     Controller::self()->setSourceImage(imagePath->text());
@@ -127,7 +128,7 @@ void MainWindow::setUiEnabled(bool enabled)
     buttonChooseIconDir->setEnabled(enabled);
     buttonChooseImage->setEnabled(enabled);
     buttonGenerate->setEnabled(enabled);
-    uniqueness->setEnabled(enabled);
+    randomness->setEnabled(enabled);
     iconLength->setEnabled(enabled);
     threadCount->setEnabled(enabled);
     imageBlockSize->setEnabled(enabled);

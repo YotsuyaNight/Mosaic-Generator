@@ -42,6 +42,7 @@ public:
     Mosaic* mosaic();
     int maxProgress();
     void setThreadCount(int n);
+    void setRandomness(int n);
 
 signals:
     void finished();
@@ -54,6 +55,7 @@ private:
     void nextTile();
 
     int m_threadCount = 1;
+    int m_randomness = 1;
     Mosaic *m_source;
     Mosaic *m_mosaic;
     IconRepository *m_repository;
@@ -69,12 +71,10 @@ class GeneratorRunner : public QThread
     Q_OBJECT
 
 public:
-    GeneratorRunner(Generator* parent, int threadNumber, int threadCount);
+    GeneratorRunner(Generator* parent);
     void run() override;
 
     Generator *m_parent;
-    int m_threadNumber;
-    int m_threadCount;
     
 signals:
     void finished(GeneratorRunner *thread);

@@ -19,12 +19,16 @@
 
 #include <QApplication>
 #include <QMainWindow>
+#include <ctime>
+#include <cstdlib>
 #include "iconrepository.h"
 #include "mainwindow.h"
 #include "controller.h"
 
 int main(int argc, char **argv)
 {
+    std::srand(std::time(nullptr));
+
     QApplication app(argc, argv);
 
     MosaicGenerator::MainWindow mw;

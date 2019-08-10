@@ -77,7 +77,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Uniqueness</string>
+          <string>Randomness</string>
          </property>
         </widget>
        </item>
@@ -95,7 +95,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QSpinBox" name="uniqueness">
+        <widget class="QSpinBox" name="randomness">
          <property name="minimum">
           <number>1</number>
          </property>

@@ -40,6 +40,7 @@ public:
     void startGenerator();
     void setSourceImage(QString path);
     void setThreadCount(int n);
+    void setRandomness(int n);
     void setIconSize(int px);
     void setImageBlockSize(int px);
     int loadIconRepository(QString path);
@@ -58,6 +59,7 @@ private:
     Generator *m_generator = nullptr;
     QImage *m_sourceImage = nullptr;
     int m_threadCount;
+    int m_randomness = 1;
     int m_iconSize = 1;
     int m_imageBlockSize = 1;
 };
