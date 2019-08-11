@@ -21,8 +21,7 @@
 #define CONTROLLER_H
 
 #include <QObject>
-
-class QImage;
+#include <QImage>
 
 namespace MosaicGenerator {
 
@@ -56,7 +55,7 @@ private:
     inline static Controller *m_self = nullptr;
     IconRepository *m_repository = nullptr;
     Generator *m_generator = nullptr;
-    QImage *m_sourceImage = nullptr;
+    QImage m_sourceImage;
     int m_threadCount;
     int m_randomness = 1;
     int m_imageBlockSize = 1;

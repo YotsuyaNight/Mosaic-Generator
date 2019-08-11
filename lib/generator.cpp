@@ -43,7 +43,7 @@ void GeneratorRunner::process()
         }
         int x = m_parent->m_nextRow;
         int y = m_parent->m_nextCol;
-        PixelMap sourceTile = m_parent->m_source->getTile(x, y);
+        PixelMap& sourceTile = m_parent->m_source->getTile(x, y);
         m_parent->nextTile();
         m_parent->m_repoAccessMutex.unlock();
 

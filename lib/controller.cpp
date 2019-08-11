@@ -17,7 +17,6 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <QImage>
 #include "controller.h"
 #include "generator.h"
 
@@ -31,7 +30,6 @@ Controller::~Controller()
 {
     delete m_repository;
     delete m_generator;
-    delete m_sourceImage;
 }
 
 Controller* Controller::self()
@@ -48,9 +46,9 @@ void Controller::startGenerator()
         delete m_generator;
     }
     //Prepare image
-    int width = (m_sourceImage->width() / m_imageBlockSize) * m_repository->iconSize();
-    int height = (m_sourceImage->height() / m_imageBlockSize) * m_repository->iconSize();
-    QImage scaledImage = m_sourceImage->scaled(width, height, Qt::KeepAspectRatio);
+    int width = (m_sourceImage.width() / m_imageBlockSize) * m_repository->iconSize();
+    int height = (m_sourceImage.height() / m_imageBlockSize) * m_repository->iconSize();
+    QImage scaledImage = m_sourceImage.scaled(width, height, Qt::KeepAspectRatio);
     //Prepare and run generator
     m_generator = new Generator(scaledImage, m_repository, m_repository->iconSize(), m_repository->iconSize());
     m_generator->setThreadCount(m_threadCount);
@@ -71,10 +69,7 @@ int Controller::loadIconRepository(QString path, int size)
 
 void Controller::setSourceImage(QString path)
 {
-    if (m_repository != nullptr) {
-        delete m_sourceImage;
-    }
-    m_sourceImage = new QImage(path);
+    m_sourceImage = QImage(path);
 }
 
 QImage Controller::mosaic()
