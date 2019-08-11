@@ -19,6 +19,7 @@
 
 #include <QDebug>
 #include <QMap>
+#include <QThread>
 #include <cstdlib>
 #include "generator.h"
 
@@ -29,7 +30,7 @@ GeneratorRunner::GeneratorRunner(Generator *parent)
 {
 }
 
-void GeneratorRunner::run()
+void GeneratorRunner::process()
 {
     QVector<PixelMap*> icons = m_parent->m_repository->icons();
     while (true) {
@@ -61,7 +62,7 @@ void GeneratorRunner::run()
         m_parent->m_mosaic->setTile(x, y, unitsIterator.value());
         
     }
-    emit finished(this);
+    emit finished();
 }
 
 Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
@@ -72,17 +73,30 @@ Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
     m_mosaic = new Mosaic(m_source->rows(), m_source->columns(), tw, th);
 }
 
+Generator::~Generator()
+{
+    qDeleteAll(m_runners);
+}
+
 void Generator::generate()
 {
     m_nextRow = 0;
     m_nextCol = 0;
     m_lastTile = false;
+    m_remainingRunners = m_threadCount;
     //Spawning threads
     for (int i = 0; i < m_threadCount; i++) {
-        GeneratorRunner *t = new GeneratorRunner(this);
-        m_runners.append(t);
-        connect(t, &GeneratorRunner::finished, this, &Generator::slotRunnerFinished);
-        t->start();
+        QThread *thread = new QThread;
+        GeneratorRunner *worker = new GeneratorRunner(this);
+        worker->moveToThread(thread);
+        connect(thread, &QThread::started, worker, &GeneratorRunner::process);
+        connect(worker, &GeneratorRunner::finished, thread, &QThread::quit);
+        connect(worker, &GeneratorRunner::finished, worker, &GeneratorRunner::deleteLater);
+        connect(thread, &QThread::finished, this, &Generator::slotRunnerFinished);
+        m_runners.append(thread);
+    }
+    for (QThread *thread : m_runners) {
+        thread->start();
     }
 }
 
@@ -99,11 +113,9 @@ void Generator::nextTile()
     emit progressTick(m_nextRow * m_source->columns() + m_nextCol);
 }
 
-void Generator::slotRunnerFinished(GeneratorRunner *thread) {
-    m_runners.removeOne(thread);
-    thread->wait();
-    delete thread;
-    if (m_runners.isEmpty()) {
+void Generator::slotRunnerFinished() {
+    m_remainingRunners--;
+    if (m_remainingRunners == 0) {
         emit finished();
     }
 }

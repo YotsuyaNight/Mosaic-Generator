@@ -21,9 +21,10 @@
 #define GENERATOR_H
 
 #include <QMutex>
-#include <QThread>
 #include "iconrepository.h"
 #include "mosaic.h"
+
+class QThread;
 
 namespace MosaicGenerator {
 
@@ -36,6 +37,7 @@ class Generator : public QObject
 
 public:
     explicit Generator(QImage source, IconRepository* ir, int tw, int th);
+    ~Generator();
 
     void generate();
     IconRepository* iconRepository();
@@ -49,35 +51,37 @@ signals:
     void progressTick(int progress);
 
 private slots:
-    void slotRunnerFinished(GeneratorRunner *thread);
+    void slotRunnerFinished();
 
 private:
     void nextTile();
 
     int m_threadCount = 1;
+    int m_remainingRunners;
     int m_randomness = 1;
     Mosaic *m_source;
     Mosaic *m_mosaic;
     IconRepository *m_repository;
-    QVector<GeneratorRunner*> m_runners;
+    QVector<QThread*> m_runners;
     QMutex m_repoAccessMutex;
     int m_nextRow;
     int m_nextCol;
     bool m_lastTile;
 };
 
-class GeneratorRunner : public QThread
+class GeneratorRunner : public QObject
 {
     Q_OBJECT
 
 public:
-    GeneratorRunner(Generator* parent);
-    void run() override;
-
+    explicit GeneratorRunner(Generator* parent);
     Generator *m_parent;
-    
+
+public slots:
+    void process();
+
 signals:
-    void finished(GeneratorRunner *thread);
+    void finished();
 
 };
 
