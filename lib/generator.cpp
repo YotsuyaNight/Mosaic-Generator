@@ -76,6 +76,8 @@ Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
 Generator::~Generator()
 {
     qDeleteAll(m_runners);
+    delete m_source;
+    delete m_mosaic;
 }
 
 void Generator::generate()
