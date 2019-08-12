@@ -68,7 +68,6 @@ void GeneratorRunner::process()
 Generator::Generator(QImage source, IconRepository* ir, int tw, int th)
     : m_repository(ir)
 {
-    source.convertTo(QImage::Format_ARGB32);
     m_source = new Mosaic(source, tw, th);
     m_mosaic = new Mosaic(m_source->rows(), m_source->columns(), tw, th);
 }

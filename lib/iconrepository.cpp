@@ -35,6 +35,7 @@ IconRepository::IconRepository(QString path, int size)
     //Turn images into PixelMap objects
     for (QFileInfo file : directory.entryInfoList()) {
         QImage image = QImage(file.absoluteFilePath()).scaled(size, size);
+        image.convertTo(QImage::Format_ARGB32);
         PixelMap *pm = new PixelMap(image);
         m_icons.append(pm);
     }

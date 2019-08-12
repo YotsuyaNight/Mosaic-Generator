@@ -29,8 +29,8 @@ namespace MosaicGenerator {
 class ZoomGraphicsView : public QGraphicsView
 {
 public:
-    ZoomGraphicsView(QGraphicsScene *scene, QWidget *parent = nullptr)
-        : QGraphicsView(scene, parent)
+    ZoomGraphicsView(QWidget *parent = nullptr)
+        : QGraphicsView(parent)
     {
         setDragMode(QGraphicsView::ScrollHandDrag);
     }
@@ -50,11 +50,13 @@ MosaicWindow::MosaicWindow(QWidget *parent)
     : QWidget(parent)
 {
     setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
     m_mosaic = Controller::self()->mosaic();
     connect(buttonSaveAs, &QPushButton::clicked, this, &MosaicWindow::saveAs);
 
-    QGraphicsScene *scene = new QGraphicsScene();
-    imageView = new ZoomGraphicsView(scene, this);
+    imageView = new ZoomGraphicsView(this);
+    QGraphicsScene *scene = new QGraphicsScene(imageView);
+    imageView->setScene(scene);
     windowLayout->insertWidget(0, imageView);
     imageView->show();
 }

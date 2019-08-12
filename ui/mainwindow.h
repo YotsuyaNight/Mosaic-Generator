@@ -33,7 +33,6 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 
 public:
     explicit MainWindow();
-    ~MainWindow();
 
 private slots:
     void chooseImage();
@@ -49,7 +48,6 @@ private:
 
     FileSelectLineEdit *iconDirPath;
     FileSelectLineEdit *imagePath;
-    QVector<MosaicWindow*> m_mosaicWindows;
     bool m_validRepository = false;
 
 };

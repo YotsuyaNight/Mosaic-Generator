@@ -70,6 +70,7 @@ int Controller::loadIconRepository(QString path, int size)
 void Controller::setSourceImage(QString path)
 {
     m_sourceImage = QImage(path);
+    m_sourceImage.convertTo(QImage::Format_ARGB32);
 }
 
 QImage Controller::mosaic()

@@ -18,6 +18,7 @@ public:
 
     virtual void mousePressEvent(QMouseEvent *event) override
     {
+        Q_UNUSED(event);
         emit clicked();
     }
 

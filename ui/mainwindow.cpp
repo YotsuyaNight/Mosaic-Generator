@@ -25,7 +25,6 @@
 #include "generator.h"
 #include <QFileDialog>
 #include <QThread>
-#include <QDebug>
 
 namespace MosaicGenerator {
 
@@ -49,13 +48,6 @@ MainWindow::MainWindow()
     threadCount->setMaximum(QThread::idealThreadCount());
 
     setFocus();
-}
-
-MainWindow::~MainWindow()
-{
-    for (MosaicWindow *window : m_mosaicWindows) {
-        delete window;
-    }
 }
 
 void MainWindow::chooseImage()
@@ -97,14 +89,6 @@ void MainWindow::generate()
 {
     progressBar->setValue(0);
 
-    qDebug() << "Generator starting with parameters:";
-    qDebug() << "Icon repository path:" << iconDirPath->text();
-    qDebug() << "Source image path:" << imagePath->text();
-    qDebug() << "Randomness:" << randomness->value();
-    qDebug() << "Icon size:" << iconLength->value();
-    qDebug() << "Image block size:" << imageBlockSize->value();
-    qDebug() << "Threads count:" << threadCount->value();
-
     Controller::self()->setThreadCount(threadCount->value());
     Controller::self()->setRandomness(randomness->value());
     Controller::self()->setImageBlockSize(imageBlockSize->value());
@@ -130,7 +114,6 @@ void MainWindow::generatorFinished()
     progressBar->setValue(Controller::self()->maxProgress());
     setUiEnabled(true);
     MosaicWindow *window = new MosaicWindow;
-    m_mosaicWindows.append(window);
     window->open();
 }
 
