@@ -36,11 +36,14 @@ MainWindow::MainWindow()
     imagePath = new FileSelectLineEdit(mainWidget);
     dynamic_cast<QGridLayout*>(iconSettingsBox->layout())->addWidget(iconDirPath, 0, 1);
     dynamic_cast<QGridLayout*>(mosaicSettingsBox->layout())->addWidget(imagePath, 0, 1);
+    warningIconSettingsChanged->hide();
 
     connect(iconDirPath, &FileSelectLineEdit::clicked, this, &MainWindow::chooseIconDirectory);
     connect(imagePath, &FileSelectLineEdit::clicked, this, &MainWindow::chooseImage);
     connect(buttonLoadIcons, &QPushButton::clicked, this, &MainWindow::loadIconDirectory);
     connect(buttonGenerate, &QPushButton::clicked, this, &MainWindow::generate);
+    connect(iconDirPath, &FileSelectLineEdit::textChanged, this, &MainWindow::displayIconSettingsWarning);
+    connect(iconLength, QOverload<const QString &>::of(&QSpinBox::valueChanged), this, &MainWindow::displayIconSettingsWarning);
     connect(Controller::self(), &Controller::generatorProgress, this, &MainWindow::updateProgress);
     connect(Controller::self(), &Controller::generatorFinished, this, &MainWindow::generatorFinished);
 
@@ -78,6 +81,7 @@ void MainWindow::loadIconDirectory()
     if (iconsLoaded > 0) {
         loadedIconsCount->setText("Detected " + QString::number(iconsLoaded) + " images in specified directory.");
         m_validRepository = true;
+        warningIconSettingsChanged->hide();
     } else {
         loadedIconsCount->setText("No images detected in specified directory!");
         m_validRepository = false;
@@ -132,6 +136,14 @@ void MainWindow::setUiEnabled(bool enabled)
 void MainWindow::updateProgress(int progress)
 {
     progressBar->setValue(progress);
+}
+
+void MainWindow::displayIconSettingsWarning(QString val)
+{
+    Q_UNUSED(val);
+    if (m_validRepository) {
+        warningIconSettingsChanged->show();
+    }
 }
 
 }

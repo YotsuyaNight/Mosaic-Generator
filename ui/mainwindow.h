@@ -42,6 +42,7 @@ private slots:
     void checkSettings();
     void generatorFinished();
     void updateProgress(int progress);
+    void displayIconSettingsWarning(QString val);
 
 private:
     void setUiEnabled(bool enabled);

@@ -62,6 +62,16 @@
          </property>
         </widget>
        </item>
+       <item row="5" column="0" colspan="3">
+        <widget class="QLabel" name="warningIconSettingsChanged">
+         <property name="styleSheet">
+          <string notr="true">color: red;</string>
+         </property>
+         <property name="text">
+          <string>Settings changed, reload to apply!</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
