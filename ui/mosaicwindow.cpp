@@ -20,9 +20,11 @@
 #include "mosaicwindow.h"
 #include "controller.h"
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QWheelEvent>
+#include <QThread>
 
 namespace MosaicGenerator {
 
@@ -46,6 +48,17 @@ protected:
     }
 };
 
+SaveImageJob::SaveImageJob(QImage &image, QString path)
+    : m_image(image), m_path(path)
+{
+}
+
+void SaveImageJob::process()
+{
+    m_image.save(m_path);
+    emit finished();
+}
+
 MosaicWindow::MosaicWindow(QWidget *parent)
     : QWidget(parent)
 {
@@ -53,6 +66,12 @@ MosaicWindow::MosaicWindow(QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
     m_mosaic = Controller::self()->mosaic();
     connect(buttonSaveAs, &QPushButton::clicked, this, &MosaicWindow::saveAs);
+
+    m_savingDialog = new QMessageBox(this);
+    m_savingDialog->setWindowTitle("Mosaic Generator");
+    m_savingDialog->setText("Saving image, please wait...");
+    m_savingDialog->setIcon(QMessageBox::Information);
+    m_savingDialog->setStandardButtons(0);
 
     imageView = new ZoomGraphicsView(this);
     QGraphicsScene *scene = new QGraphicsScene(imageView);
@@ -77,7 +96,16 @@ void MosaicWindow::saveAs()
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     if (dialog.exec()) {
         QString file = dialog.selectedFiles()[0];
-        m_mosaic.save(file);
+        QThread *thread = new QThread;
+        SaveImageJob *save = new SaveImageJob(m_mosaic, file);
+        save->moveToThread(thread);
+        connect(thread, &QThread::started, save, &SaveImageJob::process);
+        connect(save, &SaveImageJob::finished, thread, &QThread::quit);
+        connect(save, &SaveImageJob::finished, save, &SaveImageJob::deleteLater);
+        connect(thread, &QThread::finished, m_savingDialog, &QDialog::accept);
+        connect(thread, &QThread::finished, save, &QThread::deleteLater);
+        thread->start();
+        m_savingDialog->exec();
     }
 }
 

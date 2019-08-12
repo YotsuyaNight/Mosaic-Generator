@@ -23,6 +23,7 @@
 #include "ui_mosaicwindow.h"
 
 class QGraphicsView;
+class QMessageBox;
 
 namespace MosaicGenerator {
 
@@ -41,6 +42,26 @@ private slots:
 private:
     QGraphicsView *imageView;
     QImage m_mosaic;
+    QMessageBox *m_savingDialog;
+
+};
+
+class SaveImageJob : public QObject
+{
+    Q_OBJECT
+
+public:
+    SaveImageJob(QImage &image, QString path);
+
+public slots:
+    void process();
+
+signals:
+    void finished();
+
+private:
+    QImage &m_image;
+    QString m_path;
 
 };
 
