@@ -4,7 +4,6 @@ project(mosaicgenerator_ui)
 set(SOURCES
     mainwindow.cpp
     mosaicwindow.cpp
-    fileselectlineedit.hpp
     mainwindow.ui
     mosaicwindow.ui
 )

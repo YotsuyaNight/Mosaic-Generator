@@ -19,7 +19,6 @@
 
 #include "mainwindow.h"
 #include "mosaicwindow.h"
-#include "fileselectlineedit.hpp"
 #include "controller.h"
 #include "iconrepository.h"
 #include "generator.h"
@@ -31,18 +30,13 @@ namespace MosaicGenerator {
 MainWindow::MainWindow()
 {
     setupUi(this);
-
-    iconDirPath = new FileSelectLineEdit(mainWidget);
-    imagePath = new FileSelectLineEdit(mainWidget);
-    dynamic_cast<QGridLayout*>(iconSettingsBox->layout())->addWidget(iconDirPath, 0, 1);
-    dynamic_cast<QGridLayout*>(mosaicSettingsBox->layout())->addWidget(imagePath, 0, 1);
     warningIconSettingsChanged->hide();
 
-    connect(iconDirPath, &FileSelectLineEdit::clicked, this, &MainWindow::chooseIconDirectory);
-    connect(imagePath, &FileSelectLineEdit::clicked, this, &MainWindow::chooseImage);
+    connect(buttonIconDirPath, &QPushButton::clicked, this, &MainWindow::chooseIconDirectory);
+    connect(buttonImagePath, &QPushButton::clicked, this, &MainWindow::chooseImage);
     connect(buttonLoadIcons, &QPushButton::clicked, this, &MainWindow::loadIconDirectory);
     connect(buttonGenerate, &QPushButton::clicked, this, &MainWindow::generate);
-    connect(iconDirPath, &FileSelectLineEdit::textChanged, this, &MainWindow::displayIconSettingsWarning);
+    connect(iconDirPath, &QLineEdit::textChanged, this, &MainWindow::displayIconSettingsWarning);
     connect(iconLength, QOverload<const QString &>::of(&QSpinBox::valueChanged), this, &MainWindow::displayIconSettingsWarning);
     connect(Controller::self(), &Controller::generatorProgress, this, &MainWindow::updateProgress);
     connect(Controller::self(), &Controller::generatorFinished, this, &MainWindow::generatorFinished);
@@ -124,7 +118,9 @@ void MainWindow::generatorFinished()
 void MainWindow::setUiEnabled(bool enabled)
 {
     iconDirPath->setEnabled(enabled);
+    buttonIconDirPath->setEnabled(enabled);
     imagePath->setEnabled(enabled);
+    buttonImagePath->setEnabled(enabled);
     buttonLoadIcons->setEnabled(enabled);
     buttonGenerate->setEnabled(enabled);
     randomness->setEnabled(enabled);
