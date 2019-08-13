@@ -58,6 +58,13 @@ void Controller::startGenerator()
     m_generator->generate();
 }
 
+void Controller::abortGenerator()
+{
+    if (m_generator != nullptr) {
+        m_generator->abort();
+    }
+}
+
 int Controller::loadIconRepository(QString path, int size)
 {
     if (m_repository != nullptr) {

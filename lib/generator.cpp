@@ -61,6 +61,11 @@ void GeneratorRunner::process()
         }
         m_parent->m_mosaic->setTile(x, y, unitsIterator.value());
         
+        if (QThread::currentThread()->isInterruptionRequested()) {
+            emit interrupted();
+            return;
+        }
+
     }
     emit finished();
 }
@@ -92,12 +97,20 @@ void Generator::generate()
         worker->moveToThread(thread);
         connect(thread, &QThread::started, worker, &GeneratorRunner::process);
         connect(worker, &GeneratorRunner::finished, thread, &QThread::quit);
+        connect(worker, &GeneratorRunner::interrupted, thread, &QThread::quit);
+        connect(worker, &GeneratorRunner::finished, this, &Generator::slotRunnerFinished);
         connect(worker, &GeneratorRunner::finished, worker, &GeneratorRunner::deleteLater);
-        connect(thread, &QThread::finished, this, &Generator::slotRunnerFinished);
         m_runners.append(thread);
     }
     for (QThread *thread : m_runners) {
         thread->start();
+    }
+}
+
+void Generator::abort()
+{
+    for (QThread *runner : m_runners) {
+        runner->requestInterruption();
     }
 }
 

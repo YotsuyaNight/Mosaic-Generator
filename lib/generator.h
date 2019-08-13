@@ -40,6 +40,7 @@ public:
     ~Generator();
 
     void generate();
+    void abort();
     IconRepository* iconRepository();
     Mosaic* mosaic();
     int maxProgress();
@@ -82,6 +83,7 @@ public slots:
 
 signals:
     void finished();
+    void interrupted();
 
 };
 

@@ -31,11 +31,13 @@ MainWindow::MainWindow()
 {
     setupUi(this);
     warningIconSettingsChanged->hide();
+    buttonAbort->hide();
 
     connect(buttonIconDirPath, &QPushButton::clicked, this, &MainWindow::chooseIconDirectory);
     connect(buttonImagePath, &QPushButton::clicked, this, &MainWindow::chooseImage);
     connect(buttonLoadIcons, &QPushButton::clicked, this, &MainWindow::loadIconDirectory);
     connect(buttonGenerate, &QPushButton::clicked, this, &MainWindow::generate);
+    connect(buttonAbort, &QPushButton::clicked, this, &MainWindow::abort);
     connect(iconDirPath, &QLineEdit::textChanged, this, &MainWindow::displayIconSettingsWarning);
     connect(iconLength, QOverload<const QString &>::of(&QSpinBox::valueChanged), this, &MainWindow::displayIconSettingsWarning);
     connect(Controller::self(), &Controller::generatorProgress, this, &MainWindow::updateProgress);
@@ -86,15 +88,24 @@ void MainWindow::loadIconDirectory()
 void MainWindow::generate()
 {
     progressBar->setValue(0);
-
     Controller::self()->setThreadCount(threadCount->value());
     Controller::self()->setRandomness(randomness->value());
     Controller::self()->setImageBlockSize(imageBlockSize->value());
     Controller::self()->setSourceImage(imagePath->text());
     Controller::self()->startGenerator();
     setUiEnabled(false);
-
     progressBar->setMaximum(Controller::self()->maxProgress());
+    buttonGenerate->hide();
+    buttonAbort->show();
+}
+
+void MainWindow::abort()
+{
+    Controller::self()->abortGenerator();
+    buttonGenerate->show();
+    buttonAbort->hide();
+    setUiEnabled(true);
+    progressBar->setValue(0);
 }
 
 void MainWindow::checkSettings()
@@ -111,6 +122,8 @@ void MainWindow::generatorFinished()
 {
     progressBar->setValue(Controller::self()->maxProgress());
     setUiEnabled(true);
+    buttonGenerate->show();
+    buttonAbort->hide();
     MosaicWindow *window = new MosaicWindow;
     window->open();
 }
@@ -122,7 +135,6 @@ void MainWindow::setUiEnabled(bool enabled)
     imagePath->setEnabled(enabled);
     buttonImagePath->setEnabled(enabled);
     buttonLoadIcons->setEnabled(enabled);
-    buttonGenerate->setEnabled(enabled);
     randomness->setEnabled(enabled);
     iconLength->setEnabled(enabled);
     threadCount->setEnabled(enabled);

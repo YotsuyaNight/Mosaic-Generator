@@ -38,6 +38,7 @@ private slots:
     void chooseIconDirectory();
     void loadIconDirectory();
     void generate();
+    void abort();
     void checkSettings();
     void generatorFinished();
     void updateProgress(int progress);

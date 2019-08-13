@@ -15,44 +15,6 @@
   </property>
   <widget class="QWidget" name="mainWidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="2" column="0">
-     <widget class="QGroupBox" name="groupBox_4">
-      <property name="title">
-       <string>Threads</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <item row="0" column="0">
-        <widget class="QSlider" name="threadCount">
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>4</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksBelow</enum>
-         </property>
-         <property name="tickInterval">
-          <number>1</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="buttonGenerate">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Generate</string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="0">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
@@ -194,10 +156,55 @@
       </layout>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="5" column="0">
      <widget class="QProgressBar" name="progressBar">
       <property name="value">
        <number>0</number>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QPushButton" name="buttonGenerate">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Generate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="title">
+       <string>Threads</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QSlider" name="threadCount">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>4</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksBelow</enum>
+         </property>
+         <property name="tickInterval">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QPushButton" name="buttonAbort">
+      <property name="text">
+       <string>Abort</string>
       </property>
      </widget>
     </item>

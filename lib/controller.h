@@ -37,6 +37,7 @@ public:
     static Controller* self();
 
     void startGenerator();
+    void abortGenerator();
     void setSourceImage(QString path);
     void setThreadCount(int n);
     void setRandomness(int n);
