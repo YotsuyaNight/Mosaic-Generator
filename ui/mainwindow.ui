@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>502</height>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Mosaic Generator</string>
   </property>
   <widget class="QWidget" name="mainWidget">
    <layout class="QGridLayout" name="gridLayout_2">
