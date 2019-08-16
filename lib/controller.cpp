@@ -22,6 +22,8 @@
 
 namespace MosaicGenerator {
 
+Controller *Controller::m_self = nullptr;
+
 Controller::Controller()
 {
 }

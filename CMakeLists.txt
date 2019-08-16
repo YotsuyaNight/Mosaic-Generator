@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.14.0)
 project(mosaicgenerator)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
@@ -28,4 +28,4 @@ add_subdirectory(tests)
 add_executable(mg main.cpp)
 target_link_libraries(mg mgcore mgui)
 
-install(TARGETS mg unittests DESTINATION ${CMAKE_SOURCE_DIR}/install)
+install(TARGETS mg DESTINATION ${CMAKE_SOURCE_DIR}/install)

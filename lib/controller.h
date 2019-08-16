@@ -53,7 +53,7 @@ signals:
 private:
     Controller();
 
-    inline static Controller *m_self = nullptr;
+    static Controller *m_self;
     IconRepository *m_repository = nullptr;
     Generator *m_generator = nullptr;
     QImage m_sourceImage;
