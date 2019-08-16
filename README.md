@@ -5,8 +5,8 @@ This program takes an image and creates a mosaic from provided set of icons.
 How to build
 ------------
 Prerequisites:
-1. **CMake** (build system)
-2. **Qt5** (GUI framework) - source code is written using v5.13.0, althought older versions should work too.
+1. **CMake** (build system) version >= 3.14.0
+2. **Qt5** (GUI framework) version >= 5.13.0
 3. A working **C++ compiler** (g++)
 
 Build steps:
